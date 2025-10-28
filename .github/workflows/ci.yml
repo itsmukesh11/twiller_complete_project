@@ -1,0 +1,44 @@
+name: Build frontend and prepare backend
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-prepare:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: Copy frontend build into backend
+        run: |
+          rm -rf backend/frontend_build || true
+          mkdir -p backend/frontend_build
+          cp -r frontend/build/* backend/frontend_build/
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: backend
+
+      - name: Run quick lint (optional)
+        run: echo "No lint configured; add tests/lint as needed"
+
+      # Note: Render will auto-deploy from GitHub pushes if connected. This workflow prepares the repo so
+      # the backend can serve the built frontend (backend/frontend_build). If you deploy to Render, set the
+      # service to use the `backend` directory and the start command `npm start`.

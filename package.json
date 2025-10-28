@@ -1,0 +1,19 @@
+{
+  "name": "twiller-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm:dev-backend\" \"npm:dev-frontend\"",
+    "dev-backend": "cd backend && npm run dev",
+    "dev-frontend": "cd frontend && npm start"
+  },
+  "dependencies": {
+    "express-session": "^1.18.2",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
