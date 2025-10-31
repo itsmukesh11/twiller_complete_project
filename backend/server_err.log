@@ -1,0 +1,1 @@
+sendMail attempt 1 failed, will retry after 300ms: Data command failed: 550 5.7.0 Too many emails per second. Please upgrade your plan https://mailtrap.io/billing/plans/testing

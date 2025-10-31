@@ -1,0 +1,44 @@
+Server listening on 5000
+MongoDB connected
+Email sent: {
+  to: 'otpret+1760453619255@local',
+  subject: 'Welcome to Twiller',
+  messageId: '<37d7d08b-7be6-d3f4-5543-44fa4c759464@chripster.com>',
+  attempt: 1
+}
+Email sent: {
+  to: 'otpret+1760453619255@local',
+  subject: 'Your audio upload OTP',
+  messageId: '<d82f5694-4eaf-a4d5-ba87-becce1606464@chripster.com>',
+  attempt: 2
+}
+Email sent: {
+  to: 'emailtest+1760454478567@local',
+  subject: 'Welcome to Twiller',
+  messageId: '<fecd7f01-e89a-0fe4-8353-4d7166f5aea1@chripster.com>',
+  attempt: 1
+}
+Email sent: {
+  to: 'emailtest+1760454478567@local',
+  subject: 'Your audio upload OTP',
+  messageId: '<3e1e0956-6ac2-e438-2858-681d4cb2d18b@chripster.com>',
+  attempt: 1
+}
+Email sent: {
+  to: 'emailtest+1760454478567@local',
+  subject: 'Your new temporary password',
+  messageId: '<887d42a5-af79-23da-54ef-691abd19e65a@chripster.com>',
+  attempt: 1
+}
+Email sent: {
+  to: 'paytest+1760454784897@local',
+  subject: 'Welcome to Twiller',
+  messageId: '<1df07666-878e-f980-101c-3e6aba9d25c9@chripster.com>',
+  attempt: 1
+}
+Email sent: {
+  to: 'itsmukesh875@gmail.com',
+  subject: 'Your audio upload OTP',
+  messageId: '<33f630cb-5afd-d462-d49e-dd14ac6f7cd9@chripster.com>',
+  attempt: 1
+}

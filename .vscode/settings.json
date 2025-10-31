@@ -1,0 +1,13 @@
+{
+  // Prevent VS Code from attempting to download JSON schemas from schemastore.org
+  // This avoids the ENOTFOUND network/DNS diagnostic noise when offline or behind a restrictive proxy.
+  "json.schemaDownload.enable": false,
+
+  // Recommended: treat package.json as normal JSON without remote schema validation in this workspace
+  "json.schemas": [
+    {
+      "fileMatch": ["/package.json", "/backend/package.json", "/frontend/package.json"],
+      "schema": {}
+    }
+  ]
+}
