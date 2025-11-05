@@ -11,36 +11,75 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 
 const app = express();
-const PORT = process.env.PORT || 5000; // ✅ Keep only this one
+const PORT = process.env.PORT || 5000;
 
+// ✅ Connect to MongoDB
 connectDB(process.env.MONGO_URI);
 
-// Middlewares
+// ✅ Middlewares
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-session-secret',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
-// Google OAuth setup...
-// (no changes needed to this section)
+// ✅ Google OAuth setup
+passport.use(new GoogleStrategy(
+  {
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL:
+      process.env.GOOGLE_CALLBACK_URL ||
+      "https://twiller-complete-project.onrender.com/api/auth/google/callback",
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      let user = await User.findOne({ googleId: profile.id });
+      if (!user) {
+        user = new User({
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails?.[0]?.value,
+          avatar: profile.photos?.[0]?.value,
+        });
+        await user.save();
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err, null);
+    }
+  }
+));
 
-// Routes
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
+});
+
+// ✅ Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tweets', require('./routes/tweets'));
 app.use('/api/audio', require('./routes/audio'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/profile', require('./routes/profile'));
 
-// Health endpoint
-app.get('/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
-app.get('/', (req, res) => res.status(200).send('Twiller backend is up'));
+// ✅ Test route to verify API is working
+app.get("/api", (req, res) => {
+  res.json({ message: "✅ Twiller API is running correctly" });
+});
 
-// Serve frontend build
+// ✅ Health check route
+app.get('/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+
+// ✅ Root route
+app.get('/', (req, res) => res.status(200).send('Twiller backend is up 🚀'));
+
+// ✅ Serve frontend build if exists
 const FRONTEND_BUILD_DIR = process.env.FRONTEND_BUILD_DIR || path.join(__dirname, 'frontend_build');
 if (fs.existsSync(FRONTEND_BUILD_DIR)) {
   app.use(express.static(FRONTEND_BUILD_DIR));
@@ -50,9 +89,9 @@ if (fs.existsSync(FRONTEND_BUILD_DIR)) {
   });
 }
 
-// ✅ Final server start block
+// ✅ Start the server
 const server = app.listen(PORT, () => {
-  console.log(`✅ Server listening on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
 
 server.on('error', (err) => {
