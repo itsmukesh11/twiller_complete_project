@@ -1,18 +1,14 @@
 import axios from "axios";
 
-// Use environment variable from Render if available,
-// otherwise fall back to your deployed backend or localhost for testing
-const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "https://twiller-complete-project.onrender.com/api",
-});
+const baseURL =
+  process.env.REACT_APP_API_URL?.trim() ||
+  "https://twiller-complete-project.onrender.com/api";
 
-// Attach JWT token to every request if available
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+console.log("Using API base URL:", baseURL);
+
+const API = axios.create({
+  baseURL,
 });
 
 export default API;
+
