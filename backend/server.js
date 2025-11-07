@@ -59,7 +59,21 @@ passport.use(new GoogleStrategy(
   async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await User.findOne({ googleId: profile.id });
+      // If user not found by googleId, try matching by email to avoid duplicate accounts
       if (!user) {
+        const email = profile.emails?.[0]?.value;
+        if (email) {
+          user = await User.findOne({ email });
+          if (user) {
+            // attach googleId to existing account and update avatar/name if missing
+            user.googleId = profile.id;
+            user.name = user.name || profile.displayName;
+            user.avatar = user.avatar || profile.photos?.[0]?.value;
+            await user.save();
+            return done(null, user);
+          }
+        }
+        // create a new user if no existing email match
         user = new User({
           googleId: profile.id,
           name: profile.displayName,
