@@ -24,7 +24,17 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
+// Configure CORS with specific options
+app.use(cors({
+  origin: [
+    'https://twiller-complete-project-1.onrender.com',
+    'https://twiller-complete-project.onrender.com',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+}));
 app.use(express.json());
 
 // ✅ Google OAuth setup
