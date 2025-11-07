@@ -66,7 +66,11 @@ export default function AuthForm({ onAuth }) {
           cursor: "pointer",
           boxShadow: "0 1px 4px rgba(29,155,240,0.07)"
         }}
-        onClick={() => window.location.href = "http://localhost:5000/auth/google"}
+        onClick={() => {
+          // Use the configured API base URL (remove trailing /api if present)
+          const apiBase = (process.env.REACT_APP_API_URL || 'https://twiller-complete-project.onrender.com/api').replace(/\/api\/?$/, '');
+          window.location.href = `${apiBase}/auth/google`;
+        }}
         title="Sign in with Google"
       >
         <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{width:22, height:22, marginRight:8}} />
