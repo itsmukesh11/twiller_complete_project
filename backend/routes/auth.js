@@ -10,8 +10,26 @@ const moment = require('moment-timezone');
 const JWT_SECRET = process.env.JWT_SECRET;
 const auth = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
+const passport = require('passport');
 
 // register / login simple endpoints for demo
+
+// Google OAuth endpoints
+// Initiate OAuth flow
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// OAuth callback - issue JWT and redirect to frontend with token
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com'), session: true }), (req, res) => {
+  try {
+    const token = jwt.sign({ id: req.user._id, email: req.user.email }, JWT_SECRET, { expiresIn: '7d' });
+    // Redirect back to frontend and include token in query string (frontend should parse/store it)
+    const frontendUrl = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
+    return res.redirect(`${frontendUrl}/?token=${token}`);
+  } catch (e) {
+    console.error('Google callback error', e);
+    return res.redirect(process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com');
+  }
+});
 
 // Helper to remove sensitive fields
 function cleanUser(u) {
