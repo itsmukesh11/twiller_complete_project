@@ -69,7 +69,7 @@ export default function AuthForm({ onAuth }) {
         onClick={() => {
           // Redirect to backend Google OAuth endpoint. REACT_APP_API_URL already includes '/api' in our setup,
           // so keep it and append '/auth/google' to reach '/api/auth/google'.
-          const apiUrl = (process.env.REACT_APP_API_URL || 'https://twiller-complete-project.onrender.com/api').replace(/\/+$/, '');
+          const apiUrl = (process.env.REACT_APP_API_URL || "https://twiller-complete-project.onrender.com/api").replace(/\/+$/, "");
           window.location.href = `${apiUrl}/auth/google`;
         }}
         title="Sign in with Google"
