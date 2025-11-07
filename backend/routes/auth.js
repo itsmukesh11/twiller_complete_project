@@ -19,28 +19,51 @@ const passport = require('passport');
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // OAuth callback - issue JWT and redirect to frontend with token
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: (process.env.FRONTEND_URL || 'https://twiller-complete-project-1.onrender.com'), session: true }), (req, res) => {
-  // Defensive checks + detailed logging to help diagnose callback issues in production
-  if (!req.user) {
-    console.error('Google callback: no req.user present', { session: req.session && req.session.passport });
-    // Redirect back with an error flag to show something went wrong
-    const frontendUrlErr = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
-    return res.redirect(`${frontendUrlErr}/?error=oauth_no_user`);
-  }
-  if (!JWT_SECRET) {
-    console.error('Google callback: JWT_SECRET is not set in environment');
-    return res.status(500).send('Server misconfiguration');
-  }
-  try {
-    const token = jwt.sign({ id: req.user._id, email: req.user.email }, JWT_SECRET, { expiresIn: '7d' });
-    // Redirect back to frontend and include token in query string (frontend should parse/store it)
-    const frontendUrl = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
-    return res.redirect(`${frontendUrl}/?token=${token}`);
-  } catch (e) {
-    console.error('Google callback error', e, { user: req.user && { id: req.user._id, email: req.user.email } });
-    const frontendUrlErr = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
-    return res.redirect(`${frontendUrlErr}/?error=oauth_server_error`);
-  }
+// Use a custom callback so we can dynamically determine the frontend redirect
+// (from process.env.FRONTEND_URL, or the Referer/Origin header) to avoid
+// accidentally redirecting to the backend root when the env var is missing.
+router.get('/google/callback', (req, res, next) => {
+  passport.authenticate('google', { session: true }, async (err, user, info) => {
+    // Determine a safe frontend URL: explicit env wins, then referer/origin, then a sensible default
+    const candidate = (process.env.FRONTEND_URL || req.headers.referer || req.headers.origin || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
+    const frontendUrl = candidate;
+
+    if (err) {
+      console.error('Google callback: passport error', err);
+      return res.redirect(`${frontendUrl}/?error=oauth_passport_error`);
+    }
+
+    if (!user) {
+      console.error('Google callback: no user returned by passport', { session: req.session && req.session.passport, info });
+      return res.redirect(`${frontendUrl}/?error=oauth_no_user`);
+    }
+
+    if (!JWT_SECRET) {
+      console.error('Google callback: JWT_SECRET is not set in environment');
+      return res.status(500).send('Server misconfiguration');
+    }
+
+    try {
+      // Ensure the user is logged into the session (optional, keeps existing behavior)
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          console.error('Google callback: req.logIn error', loginErr);
+          return res.redirect(`${frontendUrl}/?error=oauth_login_error`);
+        }
+        try {
+          const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+          // Redirect back to frontend and include token in query string (frontend will parse/store it)
+          return res.redirect(`${frontendUrl}/?token=${token}`);
+        } catch (e) {
+          console.error('Google callback error while signing token', e, { user: user && { id: user._id, email: user.email } });
+          return res.redirect(`${frontendUrl}/?error=oauth_server_error`);
+        }
+      });
+    } catch (e) {
+      console.error('Google callback unexpected error', e);
+      return res.redirect(`${frontendUrl}/?error=oauth_server_error`);
+    }
+  })(req, res, next);
 });
 
 // Helper to remove sensitive fields
