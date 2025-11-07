@@ -20,14 +20,26 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 // OAuth callback - issue JWT and redirect to frontend with token
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com'), session: true }), (req, res) => {
+  // Defensive checks + detailed logging to help diagnose callback issues in production
+  if (!req.user) {
+    console.error('Google callback: no req.user present', { session: req.session && req.session.passport });
+    // Redirect back with an error flag to show something went wrong
+    const frontendUrlErr = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
+    return res.redirect(`${frontendUrlErr}/?error=oauth_no_user`);
+  }
+  if (!JWT_SECRET) {
+    console.error('Google callback: JWT_SECRET is not set in environment');
+    return res.status(500).send('Server misconfiguration');
+  }
   try {
     const token = jwt.sign({ id: req.user._id, email: req.user.email }, JWT_SECRET, { expiresIn: '7d' });
     // Redirect back to frontend and include token in query string (frontend should parse/store it)
     const frontendUrl = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
     return res.redirect(`${frontendUrl}/?token=${token}`);
   } catch (e) {
-    console.error('Google callback error', e);
-    return res.redirect(process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com');
+    console.error('Google callback error', e, { user: req.user && { id: req.user._id, email: req.user.email } });
+    const frontendUrlErr = (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com').replace(/\/+$/, '');
+    return res.redirect(`${frontendUrlErr}/?error=oauth_server_error`);
   }
 });
 
