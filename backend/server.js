@@ -17,10 +17,20 @@ const PORT = process.env.PORT || 5000;
 connectDB(process.env.MONGO_URI);
 
 // ✅ Middlewares
+// If running behind a proxy (Render), trust the first proxy so secure cookies work correctly
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-session-secret',
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
