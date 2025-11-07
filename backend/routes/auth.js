@@ -19,7 +19,7 @@ const passport = require('passport');
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // OAuth callback - issue JWT and redirect to frontend with token
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: (process.env.FRONTEND_URL || 'https://twiller-complete-project.onrender.com'), session: true }), (req, res) => {
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: (process.env.FRONTEND_URL || 'https://twiller-complete-project-1.onrender.com'), session: true }), (req, res) => {
   // Defensive checks + detailed logging to help diagnose callback issues in production
   if (!req.user) {
     console.error('Google callback: no req.user present', { session: req.session && req.session.passport });

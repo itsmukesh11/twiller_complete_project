@@ -1,8 +1,10 @@
 import axios from "axios";
 
-const baseURL =
-  process.env.REACT_APP_API_URL?.trim() ||
-  "https://twiller-complete-project.onrender.com/api";
+// Define API URL based on environment with fallback
+const baseURL = process.env.REACT_APP_API_URL?.trim() || 
+  (window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api'
+    : 'https://twiller-complete-project.onrender.com/api');
 
 console.log("Using API base URL:", baseURL);
 

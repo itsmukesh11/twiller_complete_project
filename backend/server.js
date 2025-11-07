@@ -35,12 +35,17 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 // Configure CORS with specific options
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://twiller-complete-project-1.onrender.com';
+const ALLOWED_ORIGINS = [
+  FRONTEND_URL,
+  'https://twiller-complete-project.onrender.com',
+  'http://localhost:3000'
+].filter(Boolean);
+
+console.log('Allowed CORS origins:', ALLOWED_ORIGINS);
+
 app.use(cors({
-  origin: [
-    'https://twiller-complete-project-1.onrender.com',
-    'https://twiller-complete-project.onrender.com',
-    'http://localhost:3000'
-  ],
+  origin: ALLOWED_ORIGINS,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
