@@ -253,16 +253,18 @@ main { min-width: 320px; }
 }
 
 .sidebar {
-    width: 180px; /* reduced width */
+    width: 100%;
     background: #fff;
-    border-radius: 18px;
     box-shadow: 0 4px 18px rgba(29,155,240,0.08);
-    padding: 24px 16px;
-    min-height: 420px;
-    border: 1.5px solid #e6ecf0;
+    padding: 12px 16px;
+    border-bottom: 1.5px solid #e6ecf0;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .sidebar .logout-button {
@@ -312,10 +314,14 @@ main { min-width: 320px; }
 label[for="avatarInput"] { background: #fff; border: 1px solid #e6ecf0; padding: 6px 10px; border-radius: 8px; }
 
 /* sidebar improvements */
-.sidebar { box-shadow: 0 8px 24px rgba(15,20,25,0.06); }
-.sidebar .brand { font-size:1.6rem; font-weight:800; color:#0c7abf; margin-bottom:12px; }
-.sidebar-link { display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; color:#0f1724; }
+.sidebar { box-shadow: 0 2px 8px rgba(15,20,25,0.06); }
+.sidebar-left { display: flex; align-items: center; gap: 24px; }
+.sidebar-right { display: flex; align-items: center; gap: 16px; }
+.sidebar .brand { font-size:1.4rem; font-weight:800; color:#0c7abf; }
+.sidebar .nav-list { display: flex; gap: 4px; }
+.sidebar-link { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:20px; color:#0f1724; text-decoration: none; }
 .sidebar-link.active { background:#eef8ff; color:#0c7abf; font-weight:700; }
+.sidebar-link:hover { background: #f5f8fa; }
 
 /* constrain big hero images that may be present in feed */
 .tweet img.hero { max-height: 320px; object-fit:cover; }

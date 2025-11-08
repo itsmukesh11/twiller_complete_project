@@ -169,6 +169,51 @@ router.post('/:id/share', auth, async (req, res) => {
   res.json({ success: true, shares: t.shares });
 });
 
+// Delete tweet endpoint
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.id);
+    if (!tweet) return res.status(404).json({ message: 'Tweet not found' });
+    
+    // Only allow deletion if user owns the tweet
+    if (String(tweet.user) !== String(req.user._id)) {
+      return res.status(403).json({ message: 'Not authorized to delete this tweet' });
+    }
+    
+    await Tweet.deleteOne({ _id: tweet._id });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete tweet error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete comment endpoint
+router.delete('/:tweetId/comments/:commentId', auth, async (req, res) => {
+  try {
+    const tweet = await Tweet.findById(req.params.tweetId);
+    if (!tweet) return res.status(404).json({ message: 'Tweet not found' });
+    
+    const comment = tweet.comments.id(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    
+    // Only allow deletion if user owns the comment
+    if (String(comment.user) !== String(req.user._id)) {
+      return res.status(403).json({ message: 'Not authorized to delete this comment' });
+    }
+    
+    comment.remove();
+    await tweet.save();
+    
+    // Populate updated comments for response
+    await tweet.populate('comments.user');
+    res.json({ success: true, comments: tweet.comments });
+  } catch (error) {
+    console.error('Delete comment error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // simple trending hashtags endpoint
 router.get('/trending/hashtags', async (req, res) => {
   // naive: scan recent tweets and collect hashtags

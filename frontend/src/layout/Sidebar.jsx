@@ -29,17 +29,19 @@ export default function Sidebar({ user, onLogout, mobile }) {
 
   return (
     <aside className="sidebar">
-      <div className="brand">Twiller</div>
-      <nav className="nav-list">
-        {navItems.map((item) => (
-          <SidebarLink key={item.label} icon={item.icon} label={item.label} to={item.to} active={location.pathname === item.to} />
-        ))}
-      </nav>
-      <div className="sidebar-bottom">
+      <div className="sidebar-left">
+        <div className="brand">Twiller</div>
+        <nav className="nav-list">
+          {navItems.map((item) => (
+            <SidebarLink key={item.label} icon={item.icon} label={item.label} to={item.to} active={location.pathname === item.to} />
+          ))}
+        </nav>
+      </div>
+      <div className="sidebar-right">
         <div className="profile-row sidebar-profile">
-          <img className="w-12 h-12 rounded-full bg-gray-200" src={user?.avatar || "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"} alt="avatar" />
+          <img className="w-10 h-10 rounded-full bg-gray-200" src={user?.avatar || "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"} alt="avatar" />
           <div className="profile-meta">
-            <div className="font-bold text-md">{user?.name}</div>
+            <div className="font-bold text-sm">{user?.name}</div>
             <div className="text-xs text-gray-500">@{user?.email?.split("@")[0]}</div>
           </div>
         </div>
