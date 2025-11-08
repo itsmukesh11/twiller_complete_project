@@ -13,7 +13,7 @@ const hashtags = ["#React", "#Tailwind", "#WebDev", "#OpenAI", "#NodeJS", "#Mong
 
 export default function RightPanel() {
   return (
-    <aside className="rightpanel hidden lg:block p-4" style={{
+    <aside className="rightpanel p-4" style={{
       background: "rgba(255,255,255,0.7)",
       boxShadow: "0 8px 32px rgba(29,155,240,0.18)",
       borderRadius: "28px",

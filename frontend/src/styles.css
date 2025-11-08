@@ -87,7 +87,7 @@ main { min-width: 320px; }
 /* Very small phones: hide right panel for space, stack sidebar & main */
 @media (max-width: 520px) {
 	.rightpanel { display: none; }
-	.sidebar { order: 0; }
+	.sidebar { order: 0; width: 100%; }
 	main { order: 1; }
 }
 
@@ -104,11 +104,11 @@ main { min-width: 320px; }
 	.sidebar {
 		padding: 10px 8px;
 		border-radius: 8px;
-		width: 220px;
+		width: 100%;
 		background: #fff;
 		box-shadow: 0 4px 18px rgba(29,155,240,0.08);
 		padding: 16px;
-		min-height: 220px;
+		min-height: auto;
 		border: 1px solid #e9f1f8;
 		display: flex;
 		flex-direction: column;
@@ -142,8 +142,10 @@ main { min-width: 320px; }
 	}
 
 	.rightpanel {
-		width: 200px; /* narrower to favor center column */
+		/* ensure rightpanel doesn't force horizontal scroll on small screens */
+		width: 100%;
 		box-sizing: border-box;
+		margin-top: 12px;
 	}
 
 	.composer button {
