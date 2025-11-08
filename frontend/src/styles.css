@@ -42,9 +42,10 @@ body {
 .app {
 	display: flex;
 	gap: 24px;
-	padding: 20px 16px 40px 16px;
+	padding: 0;
 	max-width: 1200px;
 	margin: 0 auto;
+	width: 100%;
 }
 
 /* Make the center column take priority so it becomes visually larger */
@@ -52,7 +53,11 @@ body {
 /* These use flex-basis so columns scale with the container width */
 .sidebar { flex: 0 0 20%; max-width: 28rem; }
 main { flex: 0 0 50%; max-width: 60rem; min-width: 0; }
-.rightpanel { flex: 0 0 30%; max-width: 36rem; }
+.rightpanel { 
+    flex: 0 0 30%; 
+    max-width: 36rem;
+    margin-top: 64px; /* Add space for fixed navbar */
+}
 
 /* Tablet-specific layout adjustments */
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -255,15 +260,17 @@ main { min-width: 320px; }
 .sidebar {
     width: 100%;
     background: #fff;
-    box-shadow: 0 4px 18px rgba(29,155,240,0.08);
+    box-shadow: 0 2px 8px rgba(29,155,240,0.08);
     padding: 12px 16px;
-    border-bottom: 1.5px solid #e6ecf0;
+    border-bottom: 1px solid #e6ecf0;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    position: sticky;
+    justify-content: center;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
 }
 
@@ -363,6 +370,7 @@ main {
 	flex: 1;
 	min-width: 0; /* allow flex children to shrink properly */
 	padding: 0 8px;
+	margin-top: 64px; /* Add space for fixed navbar */
 }
 
 .card {
