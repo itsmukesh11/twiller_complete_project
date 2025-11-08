@@ -111,11 +111,10 @@ export default function App() {
   return (
     <NotificationContext.Provider value={{ enabled: notificationsEnabled, setEnabled: (v) => { setNotificationsEnabled(v); localStorage.setItem("notificationsEnabled", v ? "true" : "false"); } }}>
       <BrowserRouter>
-        {/* Top nav */}
-        <div className="navbar">Twiller</div>
+        {/* Top navigation (Sidebar renders the top nav when mobile flag is false) */}
+        <Sidebar user={user} onLogout={handleLogout} />
         {/* Central app container */}
         <div className="app">
-          <Sidebar user={user} onLogout={handleLogout} />
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
