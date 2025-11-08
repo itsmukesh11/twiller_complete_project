@@ -24,26 +24,26 @@ export default function RightPanel() {
         className="mobile-subscription-toggle"
         onClick={togglePanel}
         style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
           zIndex: 101,
-          background: '#1d9bf0',
-          color: 'white',
-          border: 'none',
-          borderRadius: '50%',
-          width: '48px',
-          height: '48px',
-          display: 'none',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          fontSize: '24px'
+          background: "#1d9bf0",
+          color: "white",
+          border: "none",
+          borderRadius: "50%",
+          width: "48px",
+          height: "48px",
+          display: "none",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+          fontSize: "24px"
         }}
       >
         💎
       </button>
-      <aside className={`rightpanel p-4 ${isVisible ? 'visible' : ''}`} style={{
+      <aside className={`rightpanel p-4 ${isVisible ? "visible" : ""}`} style={{
       background: "rgba(255,255,255,0.7)",
       boxShadow: "0 8px 32px rgba(29,155,240,0.18)",
       borderRadius: "28px",
@@ -75,6 +75,7 @@ export default function RightPanel() {
         </ul>
       </div>
     </aside>
+    </>
   );
 }
 
