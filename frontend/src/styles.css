@@ -54,26 +54,105 @@ body {
 main { flex: 0 0 50%; max-width: 60rem; min-width: 0; }
 .rightpanel { flex: 0 0 30%; max-width: 36rem; }
 
+/* Tablet-specific layout adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .sidebar { 
+        flex: 0 0 80px;
+        padding: 20px 8px;
+    }
+    
+    .sidebar .link-label,
+    .sidebar .profile-meta {
+        display: none;
+    }
+    
+    .sidebar .link-icon {
+        font-size: 24px;
+    }
+    
+    main {
+        flex: 1;
+        padding: 0 16px;
+    }
+    
+    .rightpanel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 320px;
+        border-left: 1px solid #e6ecf0;
+        border-radius: 0;
+        padding: 24px;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .rightpanel.visible {
+        transform: translateX(0);
+    }
+}
+
 /* Ensure the center column can still shrink on narrow viewports */
 main { min-width: 320px; }
 
+/* Base responsive layout */
 @media (max-width: 900px) {
 	.app {
 		flex-direction: column;
 		padding: 12px 4px 0 4px;
-		gap: 0;
+		gap: 16px;
 		max-width: 100vw;
 	}
+	
 	.sidebar {
 		width: 100%;
 		min-height: unset;
-		margin-bottom: 16px;
+		margin-bottom: 0;
 		border-radius: 12px;
 		box-shadow: 0 1px 3px rgba(15,20,25,0.07);
 		padding: 12px 8px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
 	}
+
+	.sidebar .nav-list {
+		display: flex;
+		gap: 8px;
+		margin: 0;
+		padding: 0;
+		flex-wrap: wrap;
+	}
+
+	.sidebar-bottom {
+		border: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.sidebar .profile-meta {
+		display: none;
+	}
+
 	main {
 		padding: 0;
+		flex: 1;
+	}
+
+	.rightpanel {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: white;
+		border-top: 1px solid #e6ecf0;
+		border-radius: 16px 16px 0 0;
+		padding: 16px;
+		z-index: 100;
+		max-height: 80vh;
+		overflow-y: auto;
+		box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
 	}
 }
 
@@ -84,14 +163,33 @@ main { min-width: 320px; }
 	.rightpanel { flex: 0 0 24%; max-width: 260px; }
 }
 
-/* Very small phones: hide right panel for space, stack sidebar & main */
+/* Mobile layout adjustments */
 @media (max-width: 520px) {
-	.rightpanel { display: none; }
-	.sidebar { order: 0; width: 100%; }
-	main { order: 1; }
-}
-
-@media (max-width: 600px) {
+    .rightpanel:not(.visible) { 
+        transform: translateY(100%);
+    }
+    .rightpanel.visible {
+        transform: translateY(0);
+    }
+    .sidebar { 
+        order: 0; 
+        width: 100%;
+        padding: 8px;
+    }
+    main { 
+        order: 1;
+        margin-bottom: 60px; /* Space for bottom nav */
+    }
+    .mobile-subscription-toggle {
+        display: flex !important;
+    }
+    .sidebar .link-label {
+        font-size: 12px;
+    }
+    .sidebar .link-icon {
+        font-size: 20px;
+    }
+}@media (max-width: 600px) {
 	.navbar {
 		font-size: 1.1rem;
 		padding: 8px 0;
@@ -165,6 +263,38 @@ main { min-width: 320px; }
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.sidebar .logout-button {
+    margin-top: auto;
+    color: #dc2626;
+    background: #fee2e2;
+    transition: all 0.2s ease;
+}
+
+.sidebar .logout-button:hover {
+    background: #fecaca;
+    color: #b91c1c;
+}
+
+/* Sidebar profile section improvements */
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #e6ecf0;
+}
+
+.sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.sidebar-profile:hover {
+    background: #f8fafc;
 }
 
 /* Improved mobile-nav and sidebar link look */

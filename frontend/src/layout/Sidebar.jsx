@@ -42,8 +42,11 @@ export default function Sidebar({ user, onLogout, mobile }) {
             <div className="font-bold text-md">{user?.name}</div>
             <div className="text-xs text-gray-500">@{user?.email?.split("@")[0]}</div>
           </div>
-          <button onClick={onLogout} className="logout-icon" title="Logout">🚪</button>
         </div>
+        <button onClick={onLogout} className="sidebar-link logout-button">
+          <span className="link-icon">🚪</span>
+          <span className="link-label">Logout</span>
+        </button>
       </div>
     </aside>
   );
