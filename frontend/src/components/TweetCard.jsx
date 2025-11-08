@@ -3,9 +3,7 @@ import API from "../api";
 
 export default function TweetCard({
   tweet,
-  setTweets,
   onDelete,
-  isSharedTweet,
 }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [likes, setLikes] = useState(tweet.likes?.length || 0);
@@ -14,7 +12,7 @@ export default function TweetCard({
   const [commentsCount, setCommentsCount] = useState(comments.length || 0);
   const [showComments, setShowComments] = useState(false);
 
-  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
   const isOwner = currentUser._id === tweet.user?._id;
 
   async function like() {
@@ -40,22 +38,22 @@ export default function TweetCard({
   }
 
   async function deleteTweet() {
-    if (!window.confirm('Are you sure you want to delete this tweet?')) return;
+  if (!window.confirm("Are you sure you want to delete this tweet?")) return;
     
     try {
       setIsDeleting(true);
       await API.delete(`/tweets/${tweet._id}`);
       if (onDelete) onDelete(tweet._id);
     } catch (e) {
-      console.error('Error deleting tweet:', e);
-      alert('Failed to delete tweet. Please try again.');
+  console.error("Error deleting tweet:", e);
+  alert("Failed to delete tweet. Please try again.");
     } finally {
       setIsDeleting(false);
     }
   }
 
   async function deleteComment(commentId) {
-    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+  if (!window.confirm("Are you sure you want to delete this comment?")) return;
     
     try {
       const res = await API.delete(`/tweets/${tweet._id}/comments/${commentId}`);
@@ -64,8 +62,8 @@ export default function TweetCard({
         setCommentsCount(res.data.comments.length);
       }
     } catch (e) {
-      console.error('Error deleting comment:', e);
-      alert('Failed to delete comment. Please try again.');
+  console.error("Error deleting comment:", e);
+  alert("Failed to delete comment. Please try again.");
     }
   }
 
