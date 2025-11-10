@@ -12,45 +12,39 @@ const navItems = [
   { icon: "👤", label: "Profile", to: "/profile" },
 ];
 
-export default function Sidebar({ user, onLogout, mobile }) {
+export default function Sidebar({ user, onLogout, open, onClose }) {
   const location = useLocation();
-  if (mobile) {
-    return (
-      <nav className="mobile-nav">
-        {navItems.map((item) => (
-          <Link key={item.label} to={item.to} className={`mobile-nav-link ${location.pathname === item.to ? "active" : ""}`}>
-            <span className="mobile-icon">{item.icon}</span>
-          </Link>
-        ))}
-        <button onClick={onLogout} className="mobile-nav-link">🚪</button>
-      </nav>
-    );
-  }
-
+  // On small screens the Sidebar will be rendered as a slide-in drawer. When `open` is false it stays off-canvas.
+  // On larger screens it behaves as a normal in-flow sidebar.
   return (
-    <aside className="sidebar">
-      <div className="sidebar-left">
-        <div className="brand">Twiller</div>
-        <nav className="nav-list">
-          {navItems.map((item) => (
-            <SidebarLink key={item.label} icon={item.icon} label={item.label} to={item.to} active={location.pathname === item.to} />
-          ))}
-        </nav>
-      </div>
-      <div className="sidebar-right">
-        <div className="profile-row sidebar-profile">
-          <img className="w-10 h-10 rounded-full bg-gray-200" src={user?.avatar || "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"} alt="avatar" />
-          <div className="profile-meta">
-            <div className="font-bold text-sm">{user?.name}</div>
-            <div className="text-xs text-gray-500">@{user?.email?.split("@")[0]}</div>
-          </div>
+    <>
+      {/* Backdrop for mobile drawer */}
+      <div className={`sidebar-backdrop ${open ? 'visible' : ''}`} onClick={onClose} />
+
+      <aside className={`sidebar drawer ${open ? 'open' : ''}`} role="navigation" aria-label="Main sidebar">
+        <div className="sidebar-left">
+          <div className="brand">Twiller</div>
+          <nav className="nav-list">
+            {navItems.map((item) => (
+              <SidebarLink key={item.label} icon={item.icon} label={item.label} to={item.to} active={location.pathname === item.to} onClick={onClose} />
+            ))}
+          </nav>
         </div>
-        <button onClick={onLogout} className="sidebar-link logout-button">
-          <span className="link-icon">🚪</span>
-          <span className="link-label">Logout</span>
-        </button>
-      </div>
-    </aside>
+        <div className="sidebar-right">
+          <div className="profile-row sidebar-profile">
+            <img className="w-10 h-10 rounded-full bg-gray-200" src={user?.avatar || "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png"} alt="avatar" />
+            <div className="profile-meta">
+              <div className="font-bold text-sm">{user?.name}</div>
+              <div className="text-xs text-gray-500">@{user?.email?.split("@")[0]}</div>
+            </div>
+          </div>
+          <button onClick={() => { onLogout && onLogout(); onClose && onClose(); }} className="sidebar-link logout-button">
+            <span className="link-icon">🚪</span>
+            <span className="link-label">Logout</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
 

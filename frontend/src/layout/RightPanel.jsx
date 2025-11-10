@@ -12,52 +12,16 @@ const suggestedUsers = [
 const hashtags = ["#React", "#Tailwind", "#WebDev", "#OpenAI", "#NodeJS", "#MongoDB"];
 
 export default function RightPanel() {
-  const [isVisible, setIsVisible] = React.useState(false);
-
-  const togglePanel = () => {
-    setIsVisible(!isVisible);
-  };
-
   return (
-    <>
-      <button 
-        className="mobile-subscription-toggle"
-        onClick={togglePanel}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          zIndex: 101,
-          background: "#1d9bf0",
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "48px",
-          height: "48px",
-          display: "none",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          fontSize: "24px"
-        }}
-      >
-        💎
-      </button>
-      <aside className={`rightpanel p-4 ${isVisible ? "visible" : ""}`} style={{
-      background: "rgba(255,255,255,0.7)",
-      boxShadow: "0 8px 32px rgba(29,155,240,0.18)",
-      borderRadius: "28px",
-      backdropFilter: "blur(12px)",
-      border: "1.5px solid #e6ecf0"
-    }}>
+    <aside className="bg-white rounded-xl shadow-md border border-gray-100 p-4 space-y-6">
       <SubscriptionPage />
-      <div className="mt-8">
-        <div style={{ marginBottom: 8 }}>
-          <ForgotPassword />
-        </div>
+      
+      <div className="border-t border-gray-100 pt-6">
+        <ForgotPassword />
       </div>
+      
       {/* Who to follow */}
-      <div className="mt-8">
+      <div className="border-t border-gray-100 pt-6">
         <div className="font-bold text-lg mb-2">Who to follow</div>
         <div className="flex flex-col gap-3">
           {suggestedUsers.map((u) => (
@@ -65,17 +29,17 @@ export default function RightPanel() {
           ))}
         </div>
       </div>
+      
       {/* Trending hashtags */}
-      <div className="mt-8">
+      <div className="border-t border-gray-100 pt-6">
         <div className="font-bold text-lg mb-2">Trending Hashtags</div>
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-wrap gap-2">
           {hashtags.map((tag) => (
-            <li key={tag} className="text-blue-500 font-semibold hover:underline cursor-pointer">{tag}</li>
+            <li key={tag} className="text-blue-500 font-semibold hover:underline cursor-pointer bg-blue-50 px-3 py-1 rounded-full text-sm">{tag}</li>
           ))}
         </ul>
       </div>
     </aside>
-    </>
   );
 }
 

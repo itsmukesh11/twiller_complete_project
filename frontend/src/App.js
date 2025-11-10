@@ -1,11 +1,11 @@
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import API from "./api";
 import Sidebar from "./layout/Sidebar";
 import RightPanel from "./layout/RightPanel";
 import AuthForm from "./components/AuthForm";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
 import Notifications from "./pages/Notifications";
@@ -13,6 +13,69 @@ import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import NotificationContext from "./notificationContext";
 
+
+function AppContent({ user, handleLogout, notificationsEnabled, setNotificationsEnabled }) {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const location = useLocation();
+
+  // Close drawer on route change
+  useEffect(() => {
+    setIsDrawerOpen(false);
+  }, [location]);
+
+  // Toggle drawer
+  const toggleDrawer = useCallback(() => {
+    setIsDrawerOpen(prev => !prev);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation Bar */}
+      <nav className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-100 z-30 md:hidden">
+        <div className="h-full px-4 flex items-center justify-between">
+          <button
+            onClick={toggleDrawer}
+            className="p-2 rounded-lg hover:bg-gray-100"
+            aria-label="Toggle menu"
+          >
+            ☰
+          </button>
+          <div className="text-xl font-bold text-blue-600">Twiller</div>
+          <div className="w-8" /> {/* Spacer for alignment */}
+        </div>
+      </nav>
+
+      {/* Main Layout */}
+      <div className="flex min-h-screen pt-16 md:pt-0">
+        {/* Sidebar - acts as drawer on mobile */}
+        <Sidebar 
+          user={user} 
+          onLogout={handleLogout}
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+        />
+
+        {/* Main Content */}
+        <main className="flex-1 w-full max-w-[600px] mx-auto px-4 py-6">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </main>
+
+        {/* Right Panel - hidden on mobile */}
+        <aside className="hidden md:block w-[320px] shrink-0">
+          <div className="sticky top-4 p-4">
+            <RightPanel />
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [tweets, setTweets] = useState([]);
@@ -111,21 +174,12 @@ export default function App() {
   return (
     <NotificationContext.Provider value={{ enabled: notificationsEnabled, setEnabled: (v) => { setNotificationsEnabled(v); localStorage.setItem("notificationsEnabled", v ? "true" : "false"); } }}>
       <BrowserRouter>
-        {/* Top navigation (Sidebar renders the top nav when mobile flag is false) */}
-        <Sidebar user={user} onLogout={handleLogout} />
-        {/* Central app container */}
-        <div className="app">
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/explore" element={<Explore />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
-          </main>
-          <RightPanel />
-        </div>
+          <AppContent 
+            user={user}
+            handleLogout={handleLogout}
+            notificationsEnabled={notificationsEnabled}
+            setNotificationsEnabled={setNotificationsEnabled}
+          />
       </BrowserRouter>
     </NotificationContext.Provider>
   );

@@ -16,7 +16,7 @@ function useTweets() {
 export default function Home() {
   const { tweets, fetchTweets } = useTweets();
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col gap-6 py-6">
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-4 py-4 px-4 sm:px-6">
       {/* Composer kept inside Feed to avoid duplicate upload areas */}
       <Feed tweets={tweets} fetchTweets={fetchTweets} />
     </div>
